@@ -14,25 +14,94 @@ class more_posts
 {
 	public function init()
 	{
-		add_shortcode('otherposts', array($this, '_shortcode_otherposts'));
-		add_filter('the_content', array($this, '_category_page_name'));
+		/**
+		 * On-Demand call
+		 */
+		add_shortcode('mysitemap', array($this, '_shortcode_mysitemap'));
+		
+		/**
+		 * Automatically include other posts within the same category
+		 */
+		#add_filter('the_content', array($this, '_category_page_name'));
 	}
 	
-	function _category_page_name($content)
+	/**
+	 * @example [mysitemap]: Prints everything
+	 * @example [mysitemap id="5"]: restrict to a category
+	 * @example [mysitemap id="5" limit="5"]: Limits 5 posts under a givencategory
+	 */
+	public function _shortcode_mysitemap($attributes = array())
+	{
+		$content = '';
+
+		if(!is_array($attributes)) $attributes = array();
+
+		$attributes = array_map('esc_attr', $attributes);
+		$standard_attributes = array(
+			'id' => '0',
+			'limit' => '9999',
+			'title' => 'Category Sitemap',
+		);
+		$attributes = shortcode_atts($standard_attributes, $attributes);
+		
+		$category_ids = 
+
+		$args = array();
+		$args['post_status'] = 'publish';
+		
+		if($attributes['id'])
+		{
+			$args['category__in'] = array($attributes['id']);
+		}
+		
+		/**
+		 * When missing, brings default/all: 9999
+		 */
+		if($attributes['limit'])
+		{
+			$args['posts_per_page'] = $attributes['limit'];
+			$args['post_limits'] = $attributes['limit'];
+		}
+
+		$queries = new WP_Query( $args );
+
+		$li = array();
+		while ( $queries->have_posts() )
+		{
+			$queries->the_post();
+			$permalink = get_the_permalink($queries->post->ID);
+			$li[] = '<li><a href="'.$permalink.'">' . get_the_title( $queries->post->ID ) . '</a></li>';
+		}
+		if(!count($li)) return $content;
+
+		$links = implode('', $li);
+		
+		
+	$content .= "
+	<h2 class='more-posts' style='margin-top: 30px;'>{$attributes['title']}</h2>
+	<div><ol>{$links}</ol></div>
+	";
+		return $content;
+	}
+	
+	/**
+	 * Auto Append to the Post Detail in Singular View
+	 */
+	public function _category_page_name($content)
 	{
 		#if(!is_single()) return $content;
 		if(!is_singular('post')) return $content;
 		
 		$categories = get_the_category();
-		$cat_ids = array(0);
+		$category_ids = array(0);
 		foreach($categories as $category)
 		{
-			$cat_ids[] = $category->cat_ID;
+			$category_ids[] = $category->cat_ID;
 		}
 		
 		$args = array(
 			'posts_per_page' => '50',
-			'category__in' => $cat_ids,
+			'category__in' => $category_ids,
 		);
 		$queries = new WP_Query( $args );
 
