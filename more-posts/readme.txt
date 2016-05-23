@@ -17,6 +17,17 @@ Appends links to other posts under a particular category.
 
 Appends other available posts of a category in the details pages of individual posts. Useful in navigating other articles of same category.
 
+
+= Shortcodes =
+
+Additionally you can use `[mysitemap]` shortcodes.
+
+> `[mysitemap]`: Prints everything
+> `[mysitemap id="5"]`: restrict to a category
+> `[mysitemap id="5" limit="5"]`: Limits 5 posts under a given category
+> `[mysitemap limit="5"]`: Pulls 5 recent post globally
+
+
 == Installation ==
 
 

@@ -22,13 +22,13 @@ class more_posts
 		/**
 		 * Automatically include other posts within the same category
 		 */
-		#add_filter('the_content', array($this, '_category_page_name'));
+		add_filter('the_content', array($this, '_category_page_name'));
 	}
 	
 	/**
 	 * @example [mysitemap]: Prints everything
 	 * @example [mysitemap id="5"]: restrict to a category
-	 * @example [mysitemap id="5" limit="5"]: Limits 5 posts under a givencategory
+	 * @example [mysitemap id="5" limit="5"]: Limits 5 posts under a given category
 	 */
 	public function _shortcode_mysitemap($attributes = array())
 	{
