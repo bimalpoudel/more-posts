@@ -5,7 +5,7 @@
  * Description: Appends links to other posts under a particular category.
  * Author: Bimal Poudel
  * Author URI: http://bimal.org.np/
- * Development URI: https://github.com/bimalpoudel/
+ * Development URI: https://github.com/bimalpoudel/more-posts/
  * License: GPLv2 or later
  * Version: 1.0.0
  */
@@ -27,8 +27,9 @@ class more_posts
 	
 	/**
 	 * @example [mysitemap]: Prints everything
-	 * @example [mysitemap id="5"]: restrict to a category
+	 * @example [mysitemap id="5"]: restricts to a category
 	 * @example [mysitemap id="5" limit="5"]: Limits 5 posts under a given category
+	 * @example [mysitemap limit="5"]: Limits 5 globally recent posts
 	 */
 	public function _shortcode_mysitemap($attributes = array())
 	{
@@ -116,9 +117,9 @@ class more_posts
 
 		$links = implode('', $li);
 		
-		
-	$content .= "
-	<h2 class='more-posts' style='margin-top: 30px;'>More from: {$categories[0]->name}</h2>
+		$category_link = esc_url(get_category_link($categories[0]->cat_ID));
+		$content .= "
+	<h2 class='more-posts' style='margin-top: 30px;'>More from: <a href='{$category_link}'>{$categories[0]->name}</a></h2>
 	<div><ol>{$links}</ol></div>
 	";
 		return $content;
